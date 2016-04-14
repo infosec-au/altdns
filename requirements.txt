@@ -1,0 +1,5 @@
+tldextract
+argparse
+termcolor
+tqdm
+tldextract
