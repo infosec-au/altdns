@@ -24,7 +24,7 @@ parser.add_argument("-o", "--output",
                         required=True)
 parser.add_argument("-w", "--wordlist",
                     help="List of words to alter the subdomains with",
-                        required=True)
+                        required=False, default="words.txt")
 parser.add_argument("-r", "--resolve",
                     help="Resolve all altered subdomains", action="store_true")
 
