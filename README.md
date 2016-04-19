@@ -16,6 +16,12 @@ Alternatively, the `-r` flag can be passed to altdns so that once this output is
 - the `-r` command resolves each generated, permuted subdomain
 - the `-s` command tells altdns where to save the results of the resolved permuted subdomains. `results_output.txt` will contain the final list of permuted subdomains found that are valid and have a DNS record.
 
+# Screenshots
+
+<img src="https://i.imgur.com/fkfZqkl.png" width="600px"/>
+
+<img src="https://i.imgur.com/Jyfue26.png" width="600px"/>
+
 # Show some love
 
 If this tool was useful at all to you during DNS recon stages - we'd love to know. Any suggestions or ideas for this tool are welcome - just tweet [@infosec_au](https://twitter.com/infosec_au) or [@nnwakelam](https://twitter.com/nnwakelam) and we'll work on it.
