@@ -154,7 +154,6 @@ pantheon
 pass
 pay
 payment
-pbe
 pc
 php
 pl
@@ -177,11 +176,6 @@ reset
 restrict
 restricted
 reviews
-riot
-riotnet
-riotpin
-riotrumble
-rumble
 s
 s3
 sandbox
