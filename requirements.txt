@@ -2,3 +2,4 @@ tldextract
 argparse
 termcolor
 tqdm
+dnspython
