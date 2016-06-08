@@ -203,7 +203,7 @@ def main():
                     t.daemon = True
                     t.start()
                 except Exception as error:
-                    print("error: " + error)
+                    print("error:"),(error)
 
 if __name__ == "__main__":
     main()
