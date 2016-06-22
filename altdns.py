@@ -50,13 +50,15 @@ def insert_all_indexes(args, alteration_words):
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        probably_write_domain(args, wp, full_url)
+                        if actual_sub[-1:] is not ".":
+                            probably_write_domain(args, wp, full_url)
                         current_sub.pop(index)
                     current_sub.append(word.strip())
                     actual_sub = ".".join(current_sub)
                     full_url = "{0}.{1}.{2}\n".format(
                         actual_sub, ext.domain, ext.suffix)
-                    probably_write_domain(args, wp, full_url)
+                    if len(current_sub[0]) > 0:
+                      probably_write_domain(args, wp, full_url)
                     current_sub.pop()
 
 # adds word-NUM and wordNUM to each subdomain at each unique position
@@ -105,7 +107,8 @@ def insert_dash_subdomains(args, alteration_words):
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        probably_write_domain(args, wp, full_url)
+                        if len(current_sub[0]) > 0 and actual_sub[:1] is not "-":
+                            probably_write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
                         # second dash alteration
                         current_sub[index] = word.strip() + "-" + \
@@ -114,7 +117,8 @@ def insert_dash_subdomains(args, alteration_words):
                         # save second full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        probably_write_domain(args, wp, full_url)
+                        if actual_sub[-1:] is not "-":
+                            probably_write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
 
 # adds prefix and suffix word to each subdomain
@@ -167,24 +171,38 @@ def get_cname(q, target, resolved_out):
     result = list()
     result.append(target)
     try:
-        for rdata in dns.resolver.query(final_hostname, 'CNAME'):
-            result.append(rdata.target)
-        if len(result) == 1:
-            A = dns.resolver.Resolver().query(final_hostname, "A")
-            if len(A) > 0:
-                result = list()
-                result.append(final_hostname)
-                result.append(str(A[0]))
-        if len(result) > 1: #will always have 1 item (target)
-            resolved_out.write(str(result[0]) + ":" + str(result[1]) + "\n")
-            resolved_out.flush()
-            ext = tldextract.extract(str(result[1]))
-            if ext.domain == "amazonaws":
-                try:
-                    for rdata in dns.resolver.query(result[1], 'CNAME'):
-                        result.append(rdata.target)
-                except:
-                    pass
+      for rdata in dns.resolver.query(final_hostname, 'CNAME'):
+        result.append(rdata.target)
+    except:
+        pass
+    if len(result) is 1:
+      try:
+        A = dns.resolver.Resolver().query(final_hostname, "A")
+        if len(A) > 0:
+          result = list()
+          result.append(final_hostname)
+          result.append(str(A[0]))
+      except:
+        pass
+    if len(result) > 1: #will always have 1 item (target)
+        resolved_out.write(str(result[0]) + ":" + str(result[1]) + "\n")
+        resolved_out.flush()
+        ext = tldextract.extract(str(result[1]))
+        if ext.domain == "amazonaws":
+            try:
+                for rdata in dns.resolver.query(result[1], 'CNAME'):
+                    result.append(rdata.target)
+            except:
+                pass
+        print(
+            colored(
+                result[0],
+                "red") +
+            " : " +
+            colored(
+                result[1],
+                "green"))
+        if len(result) > 2 and result[2]:
             print(
                 colored(
                     result[0],
@@ -192,23 +210,12 @@ def get_cname(q, target, resolved_out):
                 " : " +
                 colored(
                     result[1],
-                    "green"))
-            if len(result) > 2 and result[2]:
-                print(
-                    colored(
-                        result[0],
-                        "red") +
-                    " : " +
-                    colored(
-                        result[1],
-                        "green") +
-                    ": " +
-                    colored(
-                        result[2],
-                        "blue"))
-        q.put(result)
-    except dns.exception.DNSException:
-        pass
+                    "green") +
+                ": " +
+                colored(
+                    result[2],
+                    "blue"))
+    q.put(result)
 
 
 def get_line_count(filename):
@@ -261,6 +268,8 @@ def main():
 
     alteration_words = get_alteration_words(args.wordlist)
 
+    # wipe the output before, so we fresh alternated data
+    open(args.output, 'w').close()
     insert_all_indexes(args, alteration_words)
     insert_dash_subdomains(args, alteration_words)
     if args.add_number_suffix is True:
