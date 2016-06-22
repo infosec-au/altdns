@@ -49,7 +49,7 @@ def insert_number_suffix_subdomains(args, alternation_words):
             for line in fp:
                 ext = tldextract.extract(line.strip())
                 current_sub = ext.subdomain.split(".")
-                for word in range(0, 9):
+                for word in range(0, 10):
                     for index, value in enumerate(current_sub):
                         #add word-NUM
                         original_sub = current_sub[index]
