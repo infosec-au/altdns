@@ -15,6 +15,7 @@ Alternatively, the `-r` flag can be passed to altdns so that once this output is
 - `words.txt` is your list of words that you'd like to permute your current subdomains with (i.e. `admin`, `staging`, `dev`, `qa`) - one word per line
 - the `-r` command resolves each generated, permuted subdomain
 - the `-s` command tells altdns where to save the results of the resolved permuted subdomains. `results_output.txt` will contain the final list of permuted subdomains found that are valid and have a DNS record.
+- the `-t` command limits how many threads the resolver will use simultaneously
 
 # Screenshots
 
