@@ -273,14 +273,14 @@ def main():
 
     alteration_words = get_alteration_words(args.wordlist)
 
-    # wipe the output before, so we fresh alternated data
-    open(args.output, 'w').close()
-
     # if we should remove existing, save the output to a temporary file
     if args.ignore_existing is True:
       args.output_tmp = args.output + '.tmp'
     else:
       args.output_tmp = args.output
+
+    # wipe the output before, so we fresh alternated data
+    open(args.output_tmp, 'w').close()
 
     insert_all_indexes(args, alteration_words)
     insert_dash_subdomains(args, alteration_words)
