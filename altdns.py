@@ -232,6 +232,9 @@ def main():
     parser.add_argument("-r", "--resolve",
                         help="Resolve all altered subdomains",
                         action="store_true")
+    parser.add_argument("-n", "--add-number-suffix",
+                        help="Add number suffix to every domain (0-9)",
+                        action="store_true")
     parser.add_argument("-e", "--ignore-existing",
                         help="Ignore existing domains in file",
                         action="store_true")
@@ -260,7 +263,8 @@ def main():
 
     insert_all_indexes(args, alteration_words)
     insert_dash_subdomains(args, alteration_words)
-    insert_number_suffix_subdomains(args, alteration_words)
+    if args.add_number_suffix is True:
+      insert_number_suffix_subdomains(args, alteration_words)
     join_words_subdomains(args, alteration_words)
 
     threadhandler = []
