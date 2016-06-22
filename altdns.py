@@ -11,12 +11,27 @@ from Queue import Queue as Queue
 import tldextract
 from termcolor import colored
 import dns.resolver
+import re
 
 
 def get_alteration_words(wordlist_fname):
     with open(wordlist_fname, "r") as f:
         return f.readlines()
 
+
+# function that checks if the domain is already in the list, if arg should ignore, dont add it
+def check_domain_exists(args, domain):
+    if args.ignore_existing is False: 
+      return False
+    with open(args.input, 'r') as file:
+        if re.search('^{0}'.format(re.escape(domain)), file.read(), flags=re.M):
+            return True
+    return False
+
+# will write to the file if the check returns true
+def probably_write_domain(args, wp, full_url):
+  if check_domain_exists(args, full_url) is False:
+    wp.write(full_url)
 
 # function inserts words at every index of the subdomain
 def insert_all_indexes(args, alteration_words):
@@ -33,13 +48,13 @@ def insert_all_indexes(args, alteration_words):
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        wp.write(full_url)
+                        probably_write_domain(args, wp, full_url)
                         current_sub.pop(index)
                     current_sub.append(word.strip())
                     actual_sub = ".".join(current_sub)
                     full_url = "{0}.{1}.{2}\n".format(
                         actual_sub, ext.domain, ext.suffix)
-                    wp.write(full_url)
+                    probably_write_domain(args, wp, full_url)
                     current_sub.pop()
 
 # adds word-NUM and wordNUM to each subdomain at each unique position
@@ -58,7 +73,7 @@ def insert_number_suffix_subdomains(args, alternation_words):
                         actual_sub = ".".join(current_sub)
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(actual_sub, ext.domain, ext.suffix)
-                        wp.write(full_url)
+                        probably_write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
 
                         #add wordNUM
@@ -68,7 +83,7 @@ def insert_number_suffix_subdomains(args, alternation_words):
                         actual_sub = ".".join(current_sub)
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(actual_sub, ext.domain, ext.suffix)
-                        wp.write(full_url)
+                        probably_write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
 
 # adds word- and -word to each subdomain at each unique position
@@ -88,7 +103,7 @@ def insert_dash_subdomains(args, alteration_words):
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        wp.write(full_url)
+                        probably_write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
                         # second dash alteration
                         current_sub[index] = word.strip() + "-" + \
@@ -97,9 +112,8 @@ def insert_dash_subdomains(args, alteration_words):
                         # save second full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        wp.write(full_url)
+                        probably_write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
-
 
 # adds prefix and suffix word to each subdomain
 def join_words_subdomains(args, alteration_words):
@@ -117,7 +131,7 @@ def join_words_subdomains(args, alteration_words):
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        wp.write(full_url)
+                        probably_write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
                         # second dash alteration
                         current_sub[index] = word.strip() + current_sub[index]
@@ -125,7 +139,7 @@ def join_words_subdomains(args, alteration_words):
                         # save second full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        wp.write(full_url)
+                        probably_write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
 
 
@@ -206,6 +220,9 @@ def main():
                         required=False, default="words.txt")
     parser.add_argument("-r", "--resolve",
                         help="Resolve all altered subdomains",
+                        action="store_true")
+    parser.add_argument("-e", "--ignore-existing",
+                        help="Ignore existing domains in file",
                         action="store_true")
 
     parser.add_argument(
