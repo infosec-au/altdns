@@ -5,6 +5,8 @@
 import argparse
 import threading
 import subprocess
+import time
+import datetime
 from threading import Lock
 from Queue import Queue as Queue
 
@@ -146,13 +148,21 @@ def join_words_subdomains(args, alteration_words):
 def get_cname(q, target, resolved_out):
     global progress
     global lock
+    global starttime
     lock.acquire()
     progress += 1
     lock.release()
     if progress % 500 == 0:
+        lock.acquire()
+        left = linecount-progress
+        secondspassed = (int(time.time())-starttime)+1
+        amountpersecond = progress / secondspassed
+        timeleft = str(datetime.timedelta(seconds=int(left/amountpersecond)))
         print(
-            colored("[*] {0}/{1} completed".format(progress, linecount),
+            colored("[*] {0}/{1} completed, approx {2} left".format(progress, linecount, timeleft),
                     "blue"))
+
+        lock.release()
     final_hostname = target
     result = list()
     result.append(target)
@@ -261,8 +271,10 @@ def main():
         global progress
         global linecount
         global lock
+        global starttime
         lock = Lock()
         progress = 0
+        starttime = int(time.time())
         linecount = get_line_count(args.output)
         with open(args.output, "r") as fp:
             for i in fp:
