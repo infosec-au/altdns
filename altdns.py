@@ -321,6 +321,9 @@ def main():
                     t.start()
                 except Exception as error:
                     print("error:"),(error)
+            #Wait for threads
+            while len(threadhandler) > 0:
+               threadhandler.pop().join()
 
 if __name__ == "__main__":
     main()
