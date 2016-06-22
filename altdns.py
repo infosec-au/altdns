@@ -48,13 +48,15 @@ def insert_all_indexes(args, alteration_words):
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        probably_write_domain(args, wp, full_url)
+                        if actual_sub[-1:] is not ".":
+                            probably_write_domain(args, wp, full_url)
                         current_sub.pop(index)
                     current_sub.append(word.strip())
                     actual_sub = ".".join(current_sub)
                     full_url = "{0}.{1}.{2}\n".format(
                         actual_sub, ext.domain, ext.suffix)
-                    probably_write_domain(args, wp, full_url)
+                    if len(current_sub[0]) > 0:
+                      probably_write_domain(args, wp, full_url)
                     current_sub.pop()
 
 # adds word-NUM and wordNUM to each subdomain at each unique position
@@ -103,7 +105,8 @@ def insert_dash_subdomains(args, alteration_words):
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        probably_write_domain(args, wp, full_url)
+                        if len(current_sub[0]) > 0 and actual_sub[:1] is not "-":
+                            probably_write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
                         # second dash alteration
                         current_sub[index] = word.strip() + "-" + \
@@ -112,7 +115,8 @@ def insert_dash_subdomains(args, alteration_words):
                         # save second full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        probably_write_domain(args, wp, full_url)
+                        if actual_sub[-1:] is not "-":
+                            probably_write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
 
 # adds prefix and suffix word to each subdomain
@@ -159,6 +163,7 @@ def get_cname(q, target, resolved_out):
     try:
         for rdata in dns.resolver.query(final_hostname, 'CNAME'):
             result.append(rdata.target)
+        print("hej %s" % result)
         if result is None:
             A = dns.resolver.Resolver().query(final_hostname, "A")
             if len(A) > 0:
@@ -250,6 +255,8 @@ def main():
 
     alteration_words = get_alteration_words(args.wordlist)
 
+    # wipe the output before, so we fresh alternated data
+    open(args.output, 'w').close()
     insert_all_indexes(args, alteration_words)
     insert_dash_subdomains(args, alteration_words)
     if args.add_number_suffix is True:
