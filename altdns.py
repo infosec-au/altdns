@@ -5,6 +5,8 @@
 import argparse
 import threading
 import subprocess
+import time
+import datetime
 from threading import Lock
 from Queue import Queue as Queue
 
@@ -150,35 +152,57 @@ def join_words_subdomains(args, alteration_words):
 def get_cname(q, target, resolved_out):
     global progress
     global lock
+    global starttime
     lock.acquire()
     progress += 1
     lock.release()
     if progress % 500 == 0:
+        lock.acquire()
+        left = linecount-progress
+        secondspassed = (int(time.time())-starttime)+1
+        amountpersecond = progress / secondspassed
+        timeleft = str(datetime.timedelta(seconds=int(left/amountpersecond)))
         print(
-            colored("[*] {0}/{1} completed".format(progress, linecount),
+            colored("[*] {0}/{1} completed, approx {2} left".format(progress, linecount, timeleft),
                     "blue"))
+
+        lock.release()
     final_hostname = target
     result = list()
     result.append(target)
     try:
-        for rdata in dns.resolver.query(final_hostname, 'CNAME'):
-            result.append(rdata.target)
-        print("hej %s" % result)
-        if result is None:
-            A = dns.resolver.Resolver().query(final_hostname, "A")
-            if len(A) > 0:
-                result.append(final_hostname)
-                result.append(str(A[0]))
-        if result is not None:
-            resolved_out.write(str(result[0]) + ":" + str(result[1]) + "\n")
-            resolved_out.flush()
-            ext = tldextract.extract(str(result[1]))
-            if ext.domain == "amazonaws":
-                try:
-                    for rdata in dns.resolver.query(result[1], 'CNAME'):
-                        result.append(rdata.target)
-                except:
-                    pass
+      for rdata in dns.resolver.query(final_hostname, 'CNAME'):
+        result.append(rdata.target)
+    except:
+        pass
+    if len(result) is 1:
+      try:
+        A = dns.resolver.Resolver().query(final_hostname, "A")
+        if len(A) > 0:
+          result = list()
+          result.append(final_hostname)
+          result.append(str(A[0]))
+      except:
+        pass
+    if len(result) > 1: #will always have 1 item (target)
+        resolved_out.write(str(result[0]) + ":" + str(result[1]) + "\n")
+        resolved_out.flush()
+        ext = tldextract.extract(str(result[1]))
+        if ext.domain == "amazonaws":
+            try:
+                for rdata in dns.resolver.query(result[1], 'CNAME'):
+                    result.append(rdata.target)
+            except:
+                pass
+        print(
+            colored(
+                result[0],
+                "red") +
+            " : " +
+            colored(
+                result[1],
+                "green"))
+        if len(result) > 2 and result[2]:
             print(
                 colored(
                     result[0],
@@ -186,23 +210,12 @@ def get_cname(q, target, resolved_out):
                 " : " +
                 colored(
                     result[1],
-                    "green"))
-            if len(result) > 2 and result[2]:
-                print(
-                    colored(
-                        result[0],
-                        "red") +
-                    " : " +
-                    colored(
-                        result[1],
-                        "green") +
-                    ": " +
-                    colored(
-                        result[2],
-                        "blue"))
-        q.put(result)
-    except dns.exception.DNSException:
-        pass
+                    "green") +
+                ": " +
+                colored(
+                    result[2],
+                    "blue"))
+    q.put(result)
 
 
 def get_line_count(filename):
@@ -256,7 +269,7 @@ def main():
     alteration_words = get_alteration_words(args.wordlist)
 
     # wipe the output before, so we fresh alternated data
-    open(args.output, 'w').close()
+    #open(args.output, 'w').close()
     insert_all_indexes(args, alteration_words)
     insert_dash_subdomains(args, alteration_words)
     if args.add_number_suffix is True:
@@ -272,8 +285,10 @@ def main():
         global progress
         global linecount
         global lock
+        global starttime
         lock = Lock()
         progress = 0
+        starttime = int(time.time())
         linecount = get_line_count(args.output)
         with open(args.output, "r") as fp:
             for i in fp:
