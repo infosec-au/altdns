@@ -169,7 +169,7 @@ def get_cname(q, target, resolved_out):
     try:
         for rdata in dns.resolver.query(final_hostname, 'CNAME'):
             result.append(rdata.target)
-        if len(result) == 0:
+        if len(result) == 1:
             A = dns.resolver.Resolver().query(final_hostname, "A")
             if len(A) > 0:
                 result = list()
