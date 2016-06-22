@@ -32,10 +32,6 @@ def check_domain_exists(args, domain):
 def probably_write_domain(args, wp, full_url):
   if check_domain_exists(args, full_url) is False:
     wp.write(full_url)
-    print("nound! %s" % full_url)
-  else:
-    print("FOUND! %s" % full_url)
-
 
 # function inserts words at every index of the subdomain
 def insert_all_indexes(args, alteration_words):
