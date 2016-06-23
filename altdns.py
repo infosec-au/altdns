@@ -142,6 +142,7 @@ def get_cname(q, target, resolved_out):
     global progress
     global lock
     global starttime
+    global found
     lock.acquire()
     progress += 1
     lock.release()
@@ -150,12 +151,11 @@ def get_cname(q, target, resolved_out):
         left = linecount-progress
         secondspassed = (int(time.time())-starttime)+1
         amountpersecond = progress / secondspassed
+        lock.release()
         timeleft = str(datetime.timedelta(seconds=int(left/amountpersecond)))
         print(
             colored("[*] {0}/{1} completed, approx {2} left".format(progress, linecount, timeleft),
                     "blue"))
-
-        lock.release()
     final_hostname = target
     result = list()
     result.append(target)
@@ -174,6 +174,13 @@ def get_cname(q, target, resolved_out):
       except:
         pass
     if len(result) > 1: #will always have 1 item (target)
+        if str(result[1]) in found:
+            if found[str(result[1])] > 3:
+                return
+            else:
+                found[str(result[1])] = found[str(result[1])] + 1
+        else:
+            found[str(result[1])] = 1
         resolved_out.write(str(result[0]) + ":" + str(result[1]) + "\n")
         resolved_out.flush()
         ext = tldextract.extract(str(result[1]))
@@ -301,7 +308,9 @@ def main():
         global linecount
         global lock
         global starttime
+        global found
         lock = Lock()
+        found = {}
         progress = 0
         starttime = int(time.time())
         linecount = get_line_count(args.output)
