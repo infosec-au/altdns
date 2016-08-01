@@ -2,4 +2,3 @@ tldextract
 argparse
 termcolor
 dnspython
-sort binary (default on unix)
