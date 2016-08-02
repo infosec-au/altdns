@@ -6,6 +6,12 @@ From these two lists that are provided as input to altdns, the tool then generat
 
 Alternatively, the `-r` flag can be passed to altdns so that once this output is generated, the tool can then resolve these subdomains (multi-threaded) and save the results to a file.
 
+# Installation
+
+`pip install -r requirements.txt`
+
+NOTE: Depends on `sort` (which is installed by default on unix).
+
 # Usage
 
 `# ./altdns.py -i subdomains.txt -o data_output -w words.txt -r -s results_output.txt`
