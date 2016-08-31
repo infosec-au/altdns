@@ -6,6 +6,8 @@ From these two lists that are provided as input to altdns, the tool then generat
 
 Alternatively, the `-r` flag can be passed to altdns so that once this output is generated, the tool can then resolve these subdomains (multi-threaded) and save the results to a file.
 
+Altdns works best with large datasets. Having an initial dataset of 200 or more subdomains should churn out some valid subdomains via the alterations generated.
+
 # Installation
 
 `pip install -r requirements.txt`
