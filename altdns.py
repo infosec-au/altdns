@@ -344,7 +344,7 @@ def main():
                
         timetaken = str(datetime.timedelta(seconds=(int(time.time())-starttime)))
         print(
-            colored("[*] Completed in {1}".format(timetaken),
+            colored("[*] Completed in {0}".format(timetaken),
                     "blue"))
 
 if __name__ == "__main__":
