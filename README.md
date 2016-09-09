@@ -24,6 +24,7 @@ NOTE: Depends on `sort` (which is installed by default on unix).
 - the `-r` command resolves each generated, permuted subdomain
 - the `-s` command tells altdns where to save the results of the resolved permuted subdomains. `results_output.txt` will contain the final list of permuted subdomains found that are valid and have a DNS record.
 - the `-t` command limits how many threads the resolver will use simultaneously
+- `-d 1.2.3.4` overrides the system default resolver and will use `1.2.3.4` as the resolving server. Setting this to the authoritative DNS server of the target domain *may* increase performance 
 
 # Screenshots
 
