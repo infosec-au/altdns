@@ -341,6 +341,11 @@ def main():
             #Wait for threads
             while len(threadhandler) > 0:
                threadhandler.pop().join()
+               
+        timetaken = str(datetime.timedelta(seconds=(int(time.time())-starttime)))
+        print(
+            colored("[*] Completed in {1}".format(timetaken),
+                    "blue"))
 
 if __name__ == "__main__":
     main()
