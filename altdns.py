@@ -143,6 +143,7 @@ def get_cname(q, target, resolved_out):
     global lock
     global starttime
     global found
+    global resolverName
     lock.acquire()
     progress += 1
     lock.release()
@@ -159,14 +160,17 @@ def get_cname(q, target, resolved_out):
     final_hostname = target
     result = list()
     result.append(target)
+    resolver = dns.resolver.Resolver()
+    if(resolverName is not None): #if a DNS server has been manually specified
+        resolver.nameservers = [resolverName]
     try:
-      for rdata in dns.resolver.query(final_hostname, 'CNAME'):
+      for rdata in resolver.query(final_hostname, 'CNAME'):
         result.append(rdata.target)
     except:
         pass
     if len(result) is 1:
       try:
-        A = dns.resolver.Resolver().query(final_hostname, "A")
+        A = resolver.query(final_hostname, "A")
         if len(A) > 0:
           result = list()
           result.append(final_hostname)
@@ -186,7 +190,7 @@ def get_cname(q, target, resolved_out):
         ext = tldextract.extract(str(result[1]))
         if ext.domain == "amazonaws":
             try:
-                for rdata in dns.resolver.query(result[1], 'CNAME'):
+                for rdata in resolver.query(result[1], 'CNAME'):
                     result.append(rdata.target)
             except:
                 pass
@@ -257,6 +261,8 @@ def main():
     parser.add_argument("-e", "--ignore-existing",
                         help="Ignore existing domains in file",
                         action="store_true")
+    parser.add_argument("-d", "--dnsserver",
+                        help="IP address of resolver to use (overrides system default)", required=False)
 
     parser.add_argument(
         "-s",
@@ -309,11 +315,13 @@ def main():
         global lock
         global starttime
         global found
+        global resolverName       
         lock = Lock()
         found = {}
         progress = 0
         starttime = int(time.time())
         linecount = get_line_count(args.output)
+        resolverName = args.dnsserver
         with open(args.output, "r") as fp:
             for i in fp:
                 if args.threads:
@@ -333,6 +341,11 @@ def main():
             #Wait for threads
             while len(threadhandler) > 0:
                threadhandler.pop().join()
+               
+        timetaken = str(datetime.timedelta(seconds=(int(time.time())-starttime)))
+        print(
+            colored("[*] Completed in {0}".format(timetaken),
+                    "blue"))
 
 if __name__ == "__main__":
     main()
