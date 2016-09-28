@@ -10,11 +10,14 @@ from threading import Lock
 from Queue import Queue as Queue
 
 import tldextract
+from tldextract.tldextract import LOG
+import logging
 from termcolor import colored
 import dns.resolver
 import re
 import os
 
+logging.basicConfig(level=logging.CRITICAL)
 
 def get_alteration_words(wordlist_fname):
     with open(wordlist_fname, "r") as f:
