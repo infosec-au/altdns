@@ -12,8 +12,6 @@ Altdns works best with large datasets. Having an initial dataset of 200 or more 
 
 `pip install -r requirements.txt`
 
-NOTE: Depends on `sort` (which is installed by default on unix).
-
 # Usage
 
 `# ./altdns.py -i subdomains.txt -o data_output -w words.txt -r -s results_output.txt`
