@@ -22,7 +22,7 @@ Altdns works best with large datasets. Having an initial dataset of 200 or more 
 - the `-r` command resolves each generated, permuted subdomain
 - the `-s` command tells altdns where to save the results of the resolved permuted subdomains. `results_output.txt` will contain the final list of permuted subdomains found that are valid and have a DNS record.
 - the `-t` command limits how many threads the resolver will use simultaneously
-- `-d 1.2.3.4` overrides the system default DNS resolver and will use the specified IP address as the resolving server. Setting this to the authoritative DNS server of the target domain *may* increase resolution performance 
+- `-d 1.1.1.1,1.0.0.1` overrides the system default DNS resolvers and will use the specified IP addresses separated by , as the resolving server. Setting this to the authoritative DNS server of the target domain *may* increase resolution performance. (i.e. `9.9.9.9`, `1.1.1.1,1.0.0.1`)
 
 # Screenshots
 

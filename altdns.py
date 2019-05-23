@@ -166,7 +166,7 @@ def get_cname(q, target, resolved_out):
     result.append(target)
     resolver = dns.resolver.Resolver()
     if(resolverName is not None): #if a DNS server has been manually specified
-        resolver.nameservers = [resolverName]
+        resolver.nameservers = [r.strip() for r in resolverName.split(",")]
     try:
       for rdata in resolver.query(final_hostname, 'CNAME'):
         result.append(rdata.target)
@@ -265,8 +265,8 @@ def main():
     parser.add_argument("-e", "--ignore-existing",
                         help="Ignore existing domains in file",
                         action="store_true")
-    parser.add_argument("-d", "--dnsserver",
-                        help="IP address of resolver to use (overrides system default)", required=False)
+    parser.add_argument("-d", "--dnsservers",
+                        help="IP addresses of resolver(s) to use separated by `,`. (overrides system default)", required=False)
 
     parser.add_argument(
         "-s",
@@ -325,7 +325,7 @@ def main():
         progress = 0
         starttime = int(time.time())
         linecount = get_line_count(args.output)
-        resolverName = args.dnsserver
+        resolverName = args.dnsservers
         with open(args.output, "r") as fp:
             for i in fp:
                 if args.threads:
