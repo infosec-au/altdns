@@ -10,11 +10,11 @@ Altdns works best with large datasets. Having an initial dataset of 200 or more 
 
 # Installation
 
-`pip install -r requirements.txt`
+`pip install py-altdns`
 
 # Usage
 
-`# ./altdns.py -i subdomains.txt -o data_output -w words.txt -r -s results_output.txt`
+`# altdns -i subdomains.txt -o data_output -w words.txt -r -s results_output.txt`
 
 - `subdomains.txt` contains the known subdomains for an organization
 - `data_output` is a file that will contain the _massive_ list of altered and permuted subdomains
