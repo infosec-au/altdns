@@ -156,7 +156,8 @@ def get_cname(q, target, resolved_out):
         secondspassed = (int(time.time())-starttime)+1
         amountpersecond = progress / secondspassed
         lock.release()
-        timeleft = str(datetime.timedelta(seconds=int(left/amountpersecond)))
+        seconds = 0 if amountpersecond == 0 else int(left/amountpersecond)
+        timeleft = str(datetime.timedelta(seconds=seconds))
         print(
             colored("[*] {0}/{1} completed, approx {2} left".format(progress, linecount, timeleft),
                     "blue"))
