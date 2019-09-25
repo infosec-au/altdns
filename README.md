@@ -8,6 +8,8 @@ Alternatively, the `-r` flag can be passed to altdns so that once this output is
 
 Altdns works best with large datasets. Having an initial dataset of 200 or more subdomains should churn out some valid subdomains via the alterations generated.
 
+Further information on attack methodology and this tool release can be found here: https://docs.google.com/presentation/d/1PCnjzCeklOeGMoWiE2IUzlRGOBxNp8K5hLQuvBNzrFY/
+
 # Installation
 
 `pip install py-altdns`
