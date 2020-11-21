@@ -42,7 +42,7 @@ def insert_all_indexes(args, alteration_words):
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        if actual_sub[-1:] is not ".":
+                        if actual_sub[-1:] != ".":
                             write_domain(args, wp, full_url)
                         current_sub.pop(index)
                     current_sub.append(word.strip())
@@ -99,7 +99,7 @@ def insert_dash_subdomains(args, alteration_words):
                         # save full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        if len(current_sub[0]) > 0 and actual_sub[:1] is not "-":
+                        if len(current_sub[0]) > 0 and actual_sub[:1] != "-":
                             write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
                         # second dash alteration
@@ -109,7 +109,7 @@ def insert_dash_subdomains(args, alteration_words):
                         # save second full URL as line in file
                         full_url = "{0}.{1}.{2}\n".format(
                             actual_sub, ext.domain, ext.suffix)
-                        if actual_sub[-1:] is not "-":
+                        if actual_sub[-1:] != "-":
                             write_domain(args, wp, full_url)
                         current_sub[index] = original_sub
 
@@ -172,7 +172,7 @@ def get_cname(q, target, resolved_out):
         result.append(rdata.target)
     except:
         pass
-    if len(result) is 1:
+    if len(result) == 1:
       try:
         A = resolver.query(final_hostname, "A")
         if len(A) > 0:
