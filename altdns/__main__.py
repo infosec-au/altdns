@@ -7,7 +7,7 @@ import threading
 import time
 import datetime
 from threading import Lock
-from queue import Queue as Queue
+from queue import Queue, Empty
 
 import tldextract
 from tldextract.tldextract import LOG
