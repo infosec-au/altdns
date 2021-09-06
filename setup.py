@@ -20,7 +20,7 @@ setuptools.setup(
     },
     install_requires=["tldextract","argparse","termcolor","dnspython"],
     classifiers=[
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
         "Topic :: Security"
