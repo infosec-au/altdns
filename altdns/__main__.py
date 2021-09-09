@@ -7,7 +7,10 @@ import threading
 import time
 import datetime
 from threading import Lock
-from queue import Queue as Queue
+try:
+   import Queue as queue
+except ImportError:
+   import queue as queue
 
 import tldextract
 from tldextract.tldextract import LOG
