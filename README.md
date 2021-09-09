@@ -12,7 +12,13 @@ Further information on attack methodology and this tool release can be found her
 
 # Installation
 
-`pip install py-altdns`
+Python 2:
+
+`pip install py-altdns==1.0.0`
+
+Python 3:
+
+`pip3 install py-altdns==1.0.2`
 
 # Usage
 
