@@ -168,7 +168,7 @@ def get_cname(q, target, resolved_out):
     result = list()
     result.append(target)
     resolver = dns.resolver.Resolver()
-    if(resolverName is not None): #if a DNS server has been manually specified
+    if(resolverName != None): #if a DNS server has been manually specified
         resolver.nameservers = [resolverName]
     try:
       for rdata in resolver.query(final_hostname, 'CNAME'):
@@ -294,7 +294,7 @@ def main():
     alteration_words = get_alteration_words(args.wordlist)
 
     # if we should remove existing, save the output to a temporary file
-    if args.ignore_existing is True:
+    if args.ignore_existing == True:
       args.output_tmp = args.output + '.tmp'
     else:
       args.output_tmp = args.output
@@ -304,14 +304,14 @@ def main():
 
     insert_all_indexes(args, alteration_words)
     insert_dash_subdomains(args, alteration_words)
-    if args.add_number_suffix is True:
+    if args.add_number_suffix == True:
       insert_number_suffix_subdomains(args, alteration_words)
     join_words_subdomains(args, alteration_words)
 
     threadhandler = []
 
     # Removes already existing + dupes from output
-    if args.ignore_existing is True:
+    if args.ignore_existing == True:
       remove_existing(args)
     else:
       remove_duplicates(args)
