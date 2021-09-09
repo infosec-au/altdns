@@ -248,7 +248,7 @@ def get_line_count(filename):
 
 
 def main():
-    q = Queue()
+    q = queue.Queue()
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input",

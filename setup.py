@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="py-altdns",
-    version="1.0.0",
+    version="1.0.2",
     author="Shubham Shah",
     author_email="sshah@assetnote.io",
     description="Generates permutations, alterations and mutations of subdomains and then resolves them.",
