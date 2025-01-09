@@ -13,7 +13,6 @@ except ImportError:
    import queue as queue
 
 import tldextract
-from tldextract.tldextract import LOG
 import logging
 from termcolor import colored
 import dns.resolver
