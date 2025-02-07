@@ -31,29 +31,40 @@ def write_domain(args, wp, full_url):
 
 # function inserts words at every index of the subdomain
 def insert_all_indexes(args, alteration_words):
+    # create list of tuples, where each tuple is a subdomain and the
+    # alteration words to be inserted into it
+    subdomains = []
     with open(args.input, "r") as fp:
-        with open(args.output_tmp, "a") as wp:
-            for line in fp:
-                ext = tldextract.extract(line.strip())
-                current_sub = ext.subdomain.split(".")
-                for word in alteration_words:
-                    for index in range(0, len(current_sub)):
-                        current_sub.insert(index, word.strip())
-                        # join the list to make into actual subdomain (aa.bb.cc)
-                        actual_sub = ".".join(current_sub)
-                        # save full URL as line in file
-                        full_url = "{0}.{1}.{2}\n".format(
-                            actual_sub, ext.domain, ext.suffix)
-                        if actual_sub[-1:] != ".":
-                            write_domain(args, wp, full_url)
-                        current_sub.pop(index)
-                    current_sub.append(word.strip())
-                    actual_sub = ".".join(current_sub)
-                    full_url = "{0}.{1}.{2}\n".format(
-                        actual_sub, ext.domain, ext.suffix)
-                    if len(current_sub[0]) > 0:
-                      write_domain(args, wp, full_url)
-                    current_sub.pop()
+        for line in fp:
+            ext = tldextract.extract(line.strip())
+            current_sub = ext.subdomain.split(".")
+            subdomains.append((current_sub, alteration_words))
+
+    # generate all modified URLs in one pass
+    modified_urls = []
+    for sub, words in subdomains:
+        for word in words:
+            for index in range(0, len(sub)):
+                sub.insert(index, word.strip())
+                # join the list to make into actual subdomain (aa.bb.cc)
+                actual_sub = ".".join(sub)
+                # save full URL as line in file
+                full_url = "{0}.{1}.{2}\n".format(
+                    actual_sub, ext.domain, ext.suffix)
+                if actual_sub[-1:] != ".":
+                    modified_urls.append(full_url)
+                sub.pop(index)
+            sub.append(word.strip())
+            actual_sub = ".".join(sub)
+            full_url = "{0}.{1}.{2}\n".format(
+                actual_sub, ext.domain, ext.suffix)
+            if len(sub[0]) > 0:
+              modified_urls.append(full_url)
+            sub.pop()
+
+    # write all modified URLs to output file at once
+    with open(args.output_tmp, "a") as wp:
+        wp.writelines(modified_urls)
 
 # adds word-NUM and wordNUM to each subdomain at each unique position
 def insert_number_suffix_subdomains(args, alternation_words):
