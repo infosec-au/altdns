@@ -18,7 +18,7 @@ setuptools.setup(
             "altdns=altdns.__main__:main",
         ]
     },
-    install_requires=["tldextract","argparse","termcolor","dnspython"],
+    install_requires=["tldextract", "termcolor", "dnspython"],
     classifiers=[
         "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: Apache Software License",
